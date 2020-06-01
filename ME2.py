@@ -34,3 +34,5 @@ def distort(input_image, output_image, patch):
 
     h, status = cv2.findHomography(source_points, destination_points)
     out_img = cv2.warpPerspective(in_img, h, size)
+
+    return out_img

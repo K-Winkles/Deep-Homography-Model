@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import os
 import os.path
 import sys
 
@@ -8,6 +8,8 @@ import math
 from keras.callbacks import ModelCheckpoint
 from keras.models import load_model
 from keras.optimizers import SGD
+
+import numpy as np
 
 from callbacks import LearningRateScheduler
 from losses import mean_corner_error
@@ -43,26 +45,41 @@ def main():
     # play with the split, but you can start with:
     # Trainig: 80%
     # Testing: 20%
+    data_dir = 'pokemon_dataset/warped'
+    files = os.listdir(data_dir)
+    size = len(files)
 
-    TRAIN_SAMPLES_COUNT = 100
-    TEST_SAMPLES_COUNT = 20
+    TRAIN_SAMPLES_COUNT = size * 0.8
+    TEST_SAMPLES_COUNT = size * 0.2
 
     # As stated in Keras docs
     steps_per_epoch = int(TRAIN_SAMPLES_COUNT / batch_size)
     epochs = int(math.ceil(target_iterations / steps_per_epoch))
 
-    train_data = #load train data here
-    test_data = #load test data here
+    train_data = []
+    test_data = []
+
+    for i in range(math.ceil(TRAIN_SAMPLES_COUNT)):
+        temp = np.load(
+                    os.getcwd() + '/pokemon_dataset/warped/' + files[i]
+               )
+        train_data.append(
+            temp['img']
+        )
+
+    for i in range(size - math.ceil(TEST_SAMPLES_COUNT) + 1, size):
+        temp = np.load(
+                    os.getcwd() + '/pokemon_dataset/warped/' + files[i]
+               )
+        test_data.append(
+            temp['img']
+        )
     test_steps = int(TEST_SAMPLES_COUNT / batch_size)
 
     # Train
-    model.fit_generator(loader, steps_per_epoch, epochs,
+    model.fit_generator(train_data, steps_per_epoch, epochs,
                         callbacks=[lr_scheduler, checkpoint],
                         validation_data=test_data, validation_steps=test_steps)
-
-    # Step 1, make the training script work :)
-    # Step 2, let me know if you get it working, the next for on the path will be open to you.
-    # Note: Step 2 won't be discussed during this call.
 
 if __name__ == '__main__':
     main()

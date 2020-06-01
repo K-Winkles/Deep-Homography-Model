@@ -15,7 +15,7 @@ def create_model():
 
     # 4 Layers with 64 filters, then another 4 with 128 filters
     filters = 4 * [64] + 4 * [128]
-    for i, f in enum erate(filters, 1):
+    for i, f in enumerate(filters, 1):
         model.add(Conv2D(f, 3, padding='same', activation='relu', name='conv2d_{}'.format(i)))
         model.add(BatchNormalization(name='batch_normalization_{}'.format(i)))
         # MaxPooling after every 2 Conv layers except the last one

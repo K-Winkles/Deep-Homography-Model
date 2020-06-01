@@ -61,8 +61,20 @@ def generate_dataset(
             os.getcwd() + '/' + output_path + pokename,
             patch
         )
-        np.savez(input_path + pokename)
-        np.savez(os.getcwd() + '/' + output_path + pokename)
+        og_filename = input_path + pokename
+        np.savez_compressed(
+            og_filename,
+            img=og_img
+        )
+
+        warped_filename = os.getcwd() + '/' + output_path + pokename
+        np.savez_compressed(
+            warped_filename,
+            img=distorted_img
+        )
+        print(warped_filename+ '.npz')
+        #data = np.load(warped_filename+ '.npz', allow_pickle=True)
+        #print(data['img'])
 
 
 generate_dataset(
